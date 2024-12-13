@@ -11,5 +11,5 @@ This is Project is for undersating the MVC structure for web applicatuon
 
 ### To Fix 
 
-- Gitignore
+- Gitignore : Fixed
 - Model Mapper
