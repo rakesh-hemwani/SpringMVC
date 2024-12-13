@@ -1,8 +1,7 @@
 package com.whitewolf.rakesh.week2.SpringMVC.controllers;
 
 import com.whitewolf.rakesh.week2.SpringMVC.dto.EmployeeDTO;
-import com.whitewolf.rakesh.week2.SpringMVC.entities.EmployeeEntity;
-import com.whitewolf.rakesh.week2.SpringMVC.repositories.EmployeeRepository;
+import com.whitewolf.rakesh.week2.SpringMVC.services.EmployeeService;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -12,11 +11,12 @@ import java.util.List;
 @RequestMapping("/employees")
 public class EmployeeController {
 
-    private final EmployeeRepository employeeRepository;
+    private final EmployeeService employeeService;
 
-    public EmployeeController(EmployeeRepository employeeRepository) {
-        this.employeeRepository = employeeRepository;
+    public EmployeeController(EmployeeService employeeService) {
+        this.employeeService = employeeService;
     }
+
 
     @GetMapping(path = "/home")
     public String getHomeMessage(){
@@ -24,28 +24,19 @@ public class EmployeeController {
     }
 
     @GetMapping(path = "/{employeeId}")
-    public EmployeeEntity getEmployeeById(@PathVariable(name = "employeeId") Long id){
-        //new EmployeeDTO(id, "Rakesh", "Rakes.Work", 27, LocalDate.of(2024,11,12),true);
-        return employeeRepository.findById(id).orElse(null);
+    public EmployeeDTO getEmployeeById(@PathVariable(name = "employeeId") Long id){
+        return employeeService.getEmployeeById(id);
     }
 
-//    @GetMapping(path = "/")
-//    public String getEmployeeDetails(@RequestParam(required = false) Integer age){
-//        if(age != null)
-//            return "Hi Employee Age is" + age;
-//        return "You have not passed the age";
-//    }
 
     @GetMapping(path = "/all")
-    public List<EmployeeEntity> getAllEmployees(@RequestParam(required = false) Integer age){
-        return employeeRepository.findAll();
+    public List<EmployeeDTO> getAllEmployees(){
+        return employeeService.getAllEmployees();
     }
 
     @PostMapping
-    public EmployeeEntity createNewEmployee(@RequestBody EmployeeEntity employeePayload){
-//        employeePayload.setActive(true);
-//        employeePayload.setId(100L);
-        return employeeRepository.save(employeePayload);
+    public EmployeeDTO createNewEmployee(@RequestBody EmployeeDTO employeePayload){
+        return employeeService.createNewEmployee(employeePayload);
     }
 
     @PutMapping String updateEmployeeID(){
