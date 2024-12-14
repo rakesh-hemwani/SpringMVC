@@ -1,5 +1,6 @@
 package com.whitewolf.rakesh.week2.SpringMVC.entities;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -7,9 +8,9 @@ import java.time.LocalDate;
 
 @Entity
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Setter
 @Table(name = "employees")
 public class EmployeeEntity {
     @Id
@@ -19,5 +20,6 @@ public class EmployeeEntity {
     private String email;
     private Integer age;
     private LocalDate dateOfJoining;
+    @JsonProperty("isActive")
     private Boolean isActive;
 }
