@@ -2,6 +2,7 @@ package com.whitewolf.rakesh.week2.SpringMVC.services;
 
 import com.whitewolf.rakesh.week2.SpringMVC.dto.EmployeeDTO;
 import com.whitewolf.rakesh.week2.SpringMVC.entities.EmployeeEntity;
+import com.whitewolf.rakesh.week2.SpringMVC.exceptions.ResourceNotFoundException;
 import com.whitewolf.rakesh.week2.SpringMVC.repositories.EmployeeRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.util.ReflectionUtils;
@@ -26,8 +27,9 @@ public class EmployeeService {
         this.modelMapper = modelMapper;
     }
 
-    public boolean isEmployeeExist(Long id){
-        return employeeRepository.existsById(id);
+    public void isEmployeeExist(Long id){
+        boolean exists = employeeRepository.existsById(id);
+        if(!exists) throw new ResourceNotFoundException("Employee Not Found id :" + id);
     }
 
     public Optional<EmployeeDTO> getEmployeeById(@PathVariable(name = "employeeId") Long id){
@@ -56,13 +58,13 @@ public class EmployeeService {
     }
 
     public Boolean deteleEmployeeByID(Long employeeId) {
-        if(!isEmployeeExist(employeeId))
-            return false;
+        isEmployeeExist(employeeId);
         employeeRepository.deleteById(employeeId);
         return true;
     }
 
     public Optional<EmployeeDTO> updatePartialEmployeeByID(Map<String, Object> updateFields, Long employeeId) {
+        isEmployeeExist(employeeId);
         return employeeRepository.findById(employeeId).map(employeeEntity -> {
                 updateFields.forEach((key, value) -> {
                     Field field = ReflectionUtils.findRequiredField(EmployeeEntity.class, key);
