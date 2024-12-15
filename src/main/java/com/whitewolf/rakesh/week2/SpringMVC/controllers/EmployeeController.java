@@ -2,7 +2,9 @@ package com.whitewolf.rakesh.week2.SpringMVC.controllers;
 
 import com.whitewolf.rakesh.week2.SpringMVC.dto.EmployeeDTO;
 import com.whitewolf.rakesh.week2.SpringMVC.entities.EmployeeEntity;
+import com.whitewolf.rakesh.week2.SpringMVC.exceptions.ResourceNotFoundException;
 import com.whitewolf.rakesh.week2.SpringMVC.services.EmployeeService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,7 +36,7 @@ public class EmployeeController {
         Optional<EmployeeDTO> employeeDTO = employeeService.getEmployeeById(id);
         return employeeDTO.
                 map(employeeDTO1 -> ResponseEntity.ok(employeeDTO1))
-                .orElse(ResponseEntity.notFound().build());
+                .orElseThrow(() -> new ResourceNotFoundException("Employee Not found :" + id));
     }
 
 
@@ -44,17 +46,17 @@ public class EmployeeController {
     }
 
     @PostMapping
-    public ResponseEntity<EmployeeDTO> createNewEmployee(@RequestBody EmployeeDTO employeePayload){
+    public ResponseEntity<EmployeeDTO> createNewEmployee(@RequestBody @Valid EmployeeDTO employeePayload){
         return new ResponseEntity<>(employeeService.createNewEmployee(employeePayload), HttpStatus.CREATED);
     }
 
     @PutMapping(path = "/{employeeId}")
-    public ResponseEntity<EmployeeDTO> updateEmployeeByID(@RequestBody EmployeeDTO employeePayload, @RequestParam Long employeeId){
+    public ResponseEntity<EmployeeDTO> updateEmployeeByID(@RequestBody @Valid EmployeeDTO employeePayload, @PathVariable Long employeeId){
         return ResponseEntity.ok(employeeService.updateEmployeeByID(employeePayload, employeeId));
     }
 
     @DeleteMapping(path = "/{employeeId}")
-    public ResponseEntity<Boolean> deteleEmployeeByID(@RequestParam Long employeeId){
+    public ResponseEntity<Boolean> deteleEmployeeByID(@PathVariable Long employeeId){
         boolean isDeleted = employeeService.deteleEmployeeByID(employeeId);
         if(isDeleted)
             return ResponseEntity.ok(true);
@@ -62,7 +64,7 @@ public class EmployeeController {
     }
 
     @PatchMapping(path = "/{employeeId}")
-    public ResponseEntity<EmployeeDTO> updatePartialEmployeeByID(@RequestBody Map<String, Objects> updateFields, @RequestParam Long employeeId){
+    public ResponseEntity<EmployeeDTO> updatePartialEmployeeByID(@RequestBody Map<String, Object> updateFields, @PathVariable Long employeeId){
         Optional<EmployeeDTO> updatedEmployee = employeeService.updatePartialEmployeeByID(updateFields, employeeId);
         return updatedEmployee
                 .map(employeeDTO -> ResponseEntity.ok(employeeDTO)).
