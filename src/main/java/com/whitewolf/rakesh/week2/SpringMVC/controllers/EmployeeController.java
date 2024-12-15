@@ -49,12 +49,12 @@ public class EmployeeController {
     }
 
     @PutMapping(path = "/{employeeId}")
-    public ResponseEntity<EmployeeDTO> updateEmployeeByID(@RequestBody EmployeeDTO employeePayload, @RequestParam Long employeeId){
+    public ResponseEntity<EmployeeDTO> updateEmployeeByID(@RequestBody EmployeeDTO employeePayload, @PathVariable Long employeeId){
         return ResponseEntity.ok(employeeService.updateEmployeeByID(employeePayload, employeeId));
     }
 
     @DeleteMapping(path = "/{employeeId}")
-    public ResponseEntity<Boolean> deteleEmployeeByID(@RequestParam Long employeeId){
+    public ResponseEntity<Boolean> deteleEmployeeByID(@PathVariable Long employeeId){
         boolean isDeleted = employeeService.deteleEmployeeByID(employeeId);
         if(isDeleted)
             return ResponseEntity.ok(true);
@@ -62,7 +62,7 @@ public class EmployeeController {
     }
 
     @PatchMapping(path = "/{employeeId}")
-    public ResponseEntity<EmployeeDTO> updatePartialEmployeeByID(@RequestBody Map<String, Objects> updateFields, @RequestParam Long employeeId){
+    public ResponseEntity<EmployeeDTO> updatePartialEmployeeByID(@RequestBody Map<String, Object> updateFields, @PathVariable Long employeeId){
         Optional<EmployeeDTO> updatedEmployee = employeeService.updatePartialEmployeeByID(updateFields, employeeId);
         return updatedEmployee
                 .map(employeeDTO -> ResponseEntity.ok(employeeDTO)).

@@ -62,7 +62,7 @@ public class EmployeeService {
         return true;
     }
 
-    public Optional<EmployeeDTO> updatePartialEmployeeByID(Map<String, Objects> updateFields, Long employeeId) {
+    public Optional<EmployeeDTO> updatePartialEmployeeByID(Map<String, Object> updateFields, Long employeeId) {
         return employeeRepository.findById(employeeId).map(employeeEntity -> {
                 updateFields.forEach((key, value) -> {
                     Field field = ReflectionUtils.findRequiredField(EmployeeEntity.class, key);
